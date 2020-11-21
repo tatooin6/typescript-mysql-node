@@ -23,3 +23,9 @@ npm run build
 ```
 
 build no es nada mas que "tsc && npm run html"
+
+
+## Cuentas de usuario
+USER:node_user 
+BASE:node_db
+PASS:123456

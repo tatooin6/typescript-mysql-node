@@ -1,25 +1,63 @@
 import { Router, Request, Response } from 'express'
+import { MySQL } from '../mysql/mysql';
 
 // Router es para definir que rutas se tienen en el proyecto
 
 const router = Router();
 
 router.get('/heroes', (req: Request, res: Response) => {
-    res.json({
+    
+    const query = `
+        SELECT *
+        FROM heroes`;
+
+    MySQL.ejecutarQuery(query, (err: any, heroes: Object[]) => {
+        if (err) {
+            res.status(400).json({
+                ok:false,
+                error:err
+            })
+        } else {
+            res.json({
+                ok: true,
+                heroes
+            });
+        }
+    });
+    
+    /* res.json({
         ok: true,
         mensaje: 'Todo esta bien!'
-    });
+    }); */
 });
 
 router.get('/heroes/:id', (req: Request, res: Response) => {
     
     const id = req.params.id;
     
-    res.json({
+    const escapedId = MySQL.instance.cnn.escape(id);
+
+    const query = `SELECT * FROM heroes WHERE id = ${escapedId}`;
+
+    MySQL.ejecutarQuery(query, (err: any, heroe: Object[]) => {
+        if (err) {
+            res.status(400).json({
+                ok:false,
+                error:err
+            })
+        } else {
+            res.json({
+                ok: true,
+                heroe: heroe[0]
+            });
+        }
+    });
+
+    /* res.json({
         ok: true,
         mensaje: 'Todo esta bien!',
         id: id
-    });
+    }); */
 });
 
 export default router;
